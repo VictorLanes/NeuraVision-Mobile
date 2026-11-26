@@ -35,7 +35,7 @@ class CameraTile @JvmOverloads constructor(
         b.title.text = text
     }
 
-    fun setSelected(sel: Boolean) {
+    fun highlight(sel: Boolean) {
         b.root.setBackgroundResource(if (sel) R.drawable.tile_selected else R.drawable.tile_border)
     }
 

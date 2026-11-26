@@ -10,6 +10,10 @@
         <item name="android:windowBackground">@color/bg</item>
     </style>
 
+    <style name="Theme.NeuraVision.Splash" parent="Theme.NeuraVision">
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+    </style>
+
     <style name="Field" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

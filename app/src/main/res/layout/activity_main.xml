@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/accent"
+            android:theme="@style/ThemeOverlay.Material3.Dark"
             app:title="@string/app_name"
             app:titleTextColor="#FFFFFF" />
 

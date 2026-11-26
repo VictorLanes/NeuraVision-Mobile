@@ -11,8 +11,8 @@ android {
         applicationId = "com.victorlanes.neuravision"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     buildTypes {
@@ -45,6 +45,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("androidx.biometric:biometric:1.1.0")
     // motor de vídeo (toca RTSP de DVR/NVR Intelbras, H.264/H.265, com usuário e senha)
     implementation("org.videolan.android:libvlc-all:3.5.1")
 }

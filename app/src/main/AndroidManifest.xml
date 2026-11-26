@@ -4,9 +4,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_launcher"
@@ -15,13 +16,22 @@
         android:theme="@style/Theme.NeuraVision">
 
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true">
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.NeuraVision.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.OnboardingActivity" android:exported="false" />
+        <activity android:name=".ui.LockActivity" android:exported="false" />
+        <activity android:name=".ui.SecurityActivity" android:exported="false" />
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false" />
 
         <activity
             android:name=".ui.DeviceEditActivity"

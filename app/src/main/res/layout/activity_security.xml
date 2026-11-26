@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/accent"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Segurança"
+        app:titleTextColor="#FFFFFF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- biometria -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="14dp" android:src="@drawable/ic_fingerprint" app:tint="@color/accent" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Digital / biometria" android:textColor="@color/text" android:textSize="16sp" android:textStyle="bold" />
+                <TextView android:id="@+id/bioSub" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textColor="@color/muted" android:textSize="13sp" />
+            </LinearLayout>
+            <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/bioSwitch" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="8dp" />
+
+        <!-- PIN -->
+        <LinearLayout android:id="@+id/pinRow" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/card" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:padding="16dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="14dp" android:src="@drawable/ic_lock" app:tint="@color/accent" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="PIN de acesso" android:textColor="@color/text" android:textSize="16sp" android:textStyle="bold" />
+                <TextView android:id="@+id/pinSub" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textColor="@color/muted" android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="8dp" />
+
+        <!-- senha -->
+        <LinearLayout android:id="@+id/passRow" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/card" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:padding="16dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="14dp" android:src="@drawable/ic_shield" app:tint="@color/accent" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Senha da conta" android:textColor="@color/text" android:textSize="16sp" android:textStyle="bold" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Alterar a senha usada para entrar" android:textColor="@color/muted" android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

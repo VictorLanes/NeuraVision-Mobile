@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/accent"
+        app:navigationIcon="@drawable/ic_back"
+        app:titleTextColor="#FFFFFF" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.textfield.TextInputLayout style="@style/Field" android:hint="Nome (ex.: Loja da Ana)">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/name" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView style="@style/Section" android:text="Endereço" />
+
+            <com.google.android.material.textfield.TextInputLayout style="@style/Field" android:hint="IP na rede do local (ex.: 192.168.1.108)">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/hostLocal" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textUri" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout style="@style/Field" android:hint="Acesso de fora – DDNS ou IP público">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/hostRemote" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textUri" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView style="@style/Hint" android:text="Preencha pelo menos um. Com os dois, o app usa o local no Wi-Fi do estabelecimento e o DDNS quando ela estiver fora." />
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputLayout style="@style/FieldHalf" android:hint="Porta RTSP">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/port" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:text="554" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <Space android:layout_width="12dp" android:layout_height="1dp" />
+                <com.google.android.material.textfield.TextInputLayout style="@style/FieldHalf" android:hint="Porta externa (se diferente)">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/portRemote" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <TextView style="@style/Section" android:text="Acesso e câmeras" />
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputLayout style="@style/FieldHalf" android:hint="Usuário">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/user" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:text="admin" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <Space android:layout_width="12dp" android:layout_height="1dp" />
+                <com.google.android.material.textfield.TextInputLayout style="@style/FieldHalf" android:hint="Senha" app:endIconMode="password_toggle">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/pass" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputLayout style="@style/FieldHalf" android:hint="Nº de câmeras">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/channels" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:text="4" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <Space android:layout_width="12dp" android:layout_height="1dp" />
+                <com.google.android.material.textfield.TextInputLayout style="@style/FieldHalf" android:hint="Canal inicial">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/startChannel" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:text="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/advancedToggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Opções avançadas ▼"
+                android:textColor="@color/accent"
+                android:textStyle="bold" />
+
+            <LinearLayout android:id="@+id/advanced" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+                <com.google.android.material.textfield.TextInputLayout style="@style/Field" android:hint="Caminho RTSP (vazio = padrão Intelbras)">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/path" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textUri" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView style="@style/Hint" android:text="Use {ch} para o canal e {st} para a qualidade (0=principal, 1=secundário). Ex.: /cam/realmonitor?channel={ch}&amp;subtype={st}" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:backgroundTint="@color/accent"
+                android:text="Salvar"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

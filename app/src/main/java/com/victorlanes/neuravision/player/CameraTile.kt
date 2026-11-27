@@ -5,17 +5,19 @@ import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.TextureView
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.victorlanes.neuravision.R
 import com.victorlanes.neuravision.databinding.ViewCameraTileBinding
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
-import org.videolan.libvlc.util.VLCVideoLayout
 
 /**
- * Um quadro de câmera: mostra o vídeo (libVLC), o título e o estado (conectando / sem sinal).
- * Chame [play] para abrir uma URL e [stop] para liberar. É reutilizável.
+ * Quadro de câmera (libVLC) com controles: foto, gravar, expandir e menu.
+ * O vídeo é desenhado num TextureView (modo do attachViews) para permitir o snapshot.
  */
 @SuppressLint("SetTextI18n")
 class CameraTile @JvmOverloads constructor(
@@ -24,36 +26,47 @@ class CameraTile @JvmOverloads constructor(
 
     private val b = ViewCameraTileBinding.inflate(LayoutInflater.from(context), this, true)
     private var player: MediaPlayer? = null
-    private var libVlc: LibVLC? = null
-    private var attached = false
+    private var recording = false
+
     var channel: Int = 0
         private set
 
-    val videoLayout: VLCVideoLayout get() = b.videoLayout
+    // callbacks ligados pela tela
+    var onExpand: (() -> Unit)? = null
+    var onMenu: (() -> Unit)? = null
+    var onInfo: ((String) -> Unit)? = null
 
-    fun setTitle(text: String) {
-        b.title.text = text
+    init {
+        b.btnSnap.setOnClickListener { takeSnapshot() }
+        b.btnRec.setOnClickListener { toggleRecord() }
+        b.btnExpand.setOnClickListener { onExpand?.invoke() }
+        b.btnMenu.setOnClickListener { onMenu?.invoke() }
     }
+
+    fun setTitle(text: String) { b.title.text = text }
 
     fun highlight(sel: Boolean) {
         b.root.setBackgroundResource(if (sel) R.drawable.tile_selected else R.drawable.tile_border)
     }
 
+    fun controlsVisible(): Boolean = b.controls.visibility == View.VISIBLE
+    fun showControls(show: Boolean) { b.controls.visibility = if (show) View.VISIBLE else View.GONE }
+    fun toggleControls() = showControls(!controlsVisible())
+
+    /** Em tela cheia o botão de expandir vira "voltar". */
+    fun setExpanded(expanded: Boolean) {
+        b.btnExpand.setImageResource(if (expanded) R.drawable.ic_collapse else R.drawable.ic_expand)
+    }
+
     fun play(engine: LibVLC, url: String, channel: Int, title: String, sub: Boolean) {
         this.channel = channel
-        this.libVlc = engine
         setTitle(title)
-        stop()                       // garante que não há player anterior
+        stop()
         showStatus("Conectando…", false)
 
         val mp = MediaPlayer(engine)
         player = mp
-        if (!attached) {
-            mp.attachViews(b.videoLayout, null, false, false)
-            attached = true
-        } else {
-            mp.attachViews(b.videoLayout, null, false, false)
-        }
+        mp.attachViews(b.videoLayout, null, false, true)   // true = TextureView (necessário p/ snapshot)
         mp.videoScale = MediaPlayer.ScaleType.SURFACE_BEST_FIT
 
         val media = Media(engine, Uri.parse(url))
@@ -73,9 +86,48 @@ class CameraTile @JvmOverloads constructor(
         mp.play()
     }
 
+    // ------------------------------------------------------------ snapshot
+    private fun findTexture(v: View): TextureView? {
+        if (v is TextureView) return v
+        if (v is ViewGroup) for (i in 0 until v.childCount) findTexture(v.getChildAt(i))?.let { return it }
+        return null
+    }
+
+    fun takeSnapshot() {
+        val tv = findTexture(b.videoLayout)
+        val bmp = tv?.bitmap
+        if (bmp == null) { onInfo?.invoke("Não consegui capturar a imagem agora"); return }
+        val name = MediaSaver.saveSnapshot(context, bmp, b.title.text.toString().ifBlank { "cam$channel" })
+        onInfo?.invoke(if (name != null) "Foto salva na galeria" else "Falha ao salvar a foto")
+    }
+
+    // ------------------------------------------------------------ gravação
+    fun isRecording(): Boolean = recording
+
+    fun toggleRecord() {
+        val mp = player ?: return
+        if (!recording) {
+            val dir = MediaSaver.recordingsDir(context)
+            val ok = try { mp.record(dir.absolutePath) } catch (e: Throwable) { false }
+            if (ok) {
+                recording = true
+                b.recDot.visibility = View.VISIBLE
+                onInfo?.invoke("Gravando…")
+            } else {
+                onInfo?.invoke("Não foi possível iniciar a gravação")
+            }
+        } else {
+            try { mp.record(null) } catch (e: Throwable) { /* ignore */ }
+            recording = false
+            b.recDot.visibility = View.GONE
+            postDelayed({ onInfo?.invoke("Gravação salva em Minhas gravações") }, 300)
+        }
+    }
+
     fun stop() {
         player?.let { mp ->
             try {
+                if (recording) { try { mp.record(null) } catch (e: Throwable) {} ; recording = false; b.recDot.visibility = View.GONE }
                 mp.setEventListener(null)
                 if (mp.isPlaying) mp.stop()
                 mp.detachViews()
@@ -85,16 +137,13 @@ class CameraTile @JvmOverloads constructor(
             }
         }
         player = null
-        attached = false
     }
 
     private fun showStatus(text: String, error: Boolean) {
         b.status.text = text
-        b.status.visibility = VISIBLE
+        b.status.visibility = View.VISIBLE
         b.status.setTextColor(if (error) 0xFFFF6B6B.toInt() else 0xFFBFD4E6.toInt())
     }
 
-    private fun hideStatus() {
-        b.status.visibility = GONE
-    }
+    private fun hideStatus() { b.status.visibility = View.GONE }
 }

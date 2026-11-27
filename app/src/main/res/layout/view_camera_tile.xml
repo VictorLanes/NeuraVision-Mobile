@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,15 +23,52 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:id="@+id/recDot"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="top|start"
+        android:layout_margin="4dp"
         android:background="#99000000"
         android:paddingHorizontal="6dp"
         android:paddingVertical="2dp"
-        android:singleLine="true"
-        android:text=""
-        android:textColor="#E6EDF4"
-        android:textSize="11sp" />
+        android:text="● REC"
+        android:textColor="#FF5C5C"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#B3000000"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="3dp"
+            android:visibility="gone">
+
+            <ImageButton android:id="@+id/btnSnap" style="@style/TileCtrl" android:src="@drawable/ic_snapshot" android:contentDescription="Foto" />
+            <ImageButton android:id="@+id/btnRec" style="@style/TileCtrl" android:src="@drawable/ic_record" android:contentDescription="Gravar" />
+            <ImageButton android:id="@+id/btnExpand" style="@style/TileCtrl" android:src="@drawable/ic_expand" android:contentDescription="Expandir" />
+            <ImageButton android:id="@+id/btnMenu" style="@style/TileCtrl" android:src="@drawable/ic_menu_dots" android:contentDescription="Mais" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#99000000"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="#E6EDF4"
+            android:textSize="11sp" />
+    </LinearLayout>
 </FrameLayout>

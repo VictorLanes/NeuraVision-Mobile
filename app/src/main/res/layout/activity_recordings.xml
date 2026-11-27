@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/accent"
+        android:theme="@style/ThemeOverlay.Material3.Dark"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Minhas fotos e gravações"
+        app:titleTextColor="#FFFFFF" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#10253A"
+        android:padding="12dp"
+        android:text="As fotos ficam na galeria do celular (álbum NeuraVision). Abaixo, as gravações feitas no app."
+        android:textColor="#9FD7F5"
+        android:textSize="13sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="30dp"
+            android:text="Nenhuma gravação ainda.\nGrave pelo botão ● nas câmeras."
+            android:textColor="@color/muted"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

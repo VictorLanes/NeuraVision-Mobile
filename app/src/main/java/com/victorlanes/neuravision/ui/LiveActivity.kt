@@ -132,9 +132,17 @@ class LiveActivity : AppCompatActivity() {
             setMargins(2, 2, 2, 2)
         }
         tile.layoutParams = lp
-        tile.setOnClickListener { toggleSingle(channel) }
+        tile.onInfo = { msg -> Toast.makeText(this, msg, Toast.LENGTH_SHORT).show() }
+        tile.onExpand = { toggleSingle(channel) }
+        tile.onMenu = { showTileMenu(channel) }
+        tile.setOnClickListener { tile.toggleControls() }
         b.grid.addView(tile)
         tiles.add(tile)
+
+        if (single != null) {           // em tela cheia já mostra os controles
+            tile.setExpanded(true)
+            tile.showControls(true)
+        }
 
         val url = Rtsp.url(host, port, device.user, device.pass, channel, sub, device.path)
         tile.play(engine, url, channel, "Câmera $channel", sub)
@@ -143,6 +151,28 @@ class LiveActivity : AppCompatActivity() {
     private fun toggleSingle(channel: Int) {
         single = if (single == null) channel else null
         render()
+    }
+
+    private fun showTileMenu(channel: Int) {
+        val emTela = single != null
+        val opcoes = arrayOf(
+            "Buscar gravação no DVR",
+            "Minhas fotos e gravações",
+            if (emTela) "Sair da tela cheia" else "Abrir em tela cheia"
+        )
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Câmera $channel")
+            .setItems(opcoes) { _, i ->
+                when (i) {
+                    0 -> startActivity(
+                        android.content.Intent(this, PlaybackActivity::class.java)
+                            .putExtra("id", device.id).putExtra("channel", channel)
+                    )
+                    1 -> startActivity(android.content.Intent(this, RecordingsActivity::class.java))
+                    2 -> toggleSingle(channel)
+                }
+            }
+            .show()
     }
 
     private fun stopTiles() {

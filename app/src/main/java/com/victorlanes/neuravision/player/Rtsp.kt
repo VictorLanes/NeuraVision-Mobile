@@ -4,6 +4,9 @@ import com.victorlanes.neuravision.model.Device
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /** Monta as URLs RTSP e escolhe o endereço (local x DDNS). */
 object Rtsp {
@@ -19,6 +22,17 @@ object Rtsp {
         val tail = tmpl.replace("{ch}", channel.toString()).replace("{st}", if (sub) "1" else "0")
         val sep = if (tail.startsWith("/")) "" else "/"
         return "rtsp://$cred$host:$port$sep$tail"
+    }
+
+    /**
+     * URL de PLAYBACK (gravação) do DVR/NVR Intelbras/Dahua, por período.
+     * Formato: rtsp://user:senha@host:porta/cam/playback?channel=N&starttime=AAAA_MM_DD_HH_MM_SS&endtime=...
+     */
+    fun playbackUrl(host: String, port: Int, user: String, pass: String, channel: Int, start: Date, end: Date): String {
+        val cred = if (user.isNotEmpty()) "${enc(user)}:${enc(pass)}@" else ""
+        val f = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.US)
+        return "rtsp://$cred$host:$port/cam/playback?channel=$channel" +
+            "&starttime=${f.format(start)}&endtime=${f.format(end)}"
     }
 
     /** Testa se dá para abrir um socket TCP no host:porta (usado para saber se está na rede local). */

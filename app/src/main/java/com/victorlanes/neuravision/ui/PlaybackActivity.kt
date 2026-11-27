@@ -128,7 +128,12 @@ class PlaybackActivity : AppCompatActivity() {
         } else {
             try { mp.record(null) } catch (e: Throwable) {}
             recording = false; b.recDot.visibility = View.GONE; b.btnDownload.text = "Baixar esta gravação"
-            Toast.makeText(this, "Gravação salva em Minhas gravações", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Salvando…", Toast.LENGTH_SHORT).show()
+            b.recDot.postDelayed({
+                val name = MediaSaver.publishNewestRecording(this)
+                Toast.makeText(this, if (name != null) "Salvo na galeria (álbum NeuraVision)"
+                                     else "Salvo (veja em Minhas gravações)", Toast.LENGTH_LONG).show()
+            }, 1500)
         }
     }
 

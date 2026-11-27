@@ -1,12 +1,14 @@
 package com.victorlanes.neuravision.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -20,11 +22,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/** Lista as gravações feitas no app, com abrir, compartilhar e apagar. */
+/** Lista as gravações do álbum NeuraVision (galeria), com abrir, compartilhar e apagar. */
 class RecordingsActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityRecordingsBinding
-    private val items = mutableListOf<File>()
+    private val items = mutableListOf<MediaSaver.Rec>()
     private lateinit var adapter: Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,46 +45,51 @@ class RecordingsActivity : AppCompatActivity() {
 
     private fun reload() {
         items.clear()
-        items.addAll(MediaSaver.listMedia(this))
+        items.addAll(MediaSaver.listRecordings(this))
         adapter.notifyDataSetChanged()
         b.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun uriFor(f: File) = FileProvider.getUriForFile(this, "$packageName.fileprovider", f)
+    private fun shareableUri(rec: MediaSaver.Rec): Uri =
+        if (rec.uri.scheme == "file") FileProvider.getUriForFile(this, "$packageName.fileprovider", File(rec.uri.path!!))
+        else rec.uri
 
-    private fun open(f: File) {
+    private fun open(rec: MediaSaver.Rec) {
         try {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uriFor(f), "video/*")
+                setDataAndType(shareableUri(rec), "video/*")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             })
         } catch (e: Exception) {
-            android.widget.Toast.makeText(this, "Nenhum app para abrir o vídeo", android.widget.Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Nenhum app para abrir o vídeo", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun share(f: File) {
+    private fun share(rec: MediaSaver.Rec) {
         startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
             type = "video/*"
-            putExtra(Intent.EXTRA_STREAM, uriFor(f))
+            putExtra(Intent.EXTRA_STREAM, shareableUri(rec))
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }, "Compartilhar gravação"))
     }
 
-    private fun confirmDelete(f: File) {
+    private fun confirmDelete(rec: MediaSaver.Rec) {
         AlertDialog.Builder(this)
             .setTitle("Apagar")
             .setMessage("Apagar esta gravação do celular?")
-            .setPositiveButton("Apagar") { _, _ -> f.delete(); reload() }
+            .setPositiveButton("Apagar") { _, _ ->
+                if (MediaSaver.delete(this, rec)) reload()
+                else Toast.makeText(this, "Não consegui apagar", Toast.LENGTH_SHORT).show()
+            }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
     private class Adapter(
-        val data: List<File>,
-        val onOpen: (File) -> Unit,
-        val onShare: (File) -> Unit,
-        val onDelete: (File) -> Unit
+        val data: List<MediaSaver.Rec>,
+        val onOpen: (MediaSaver.Rec) -> Unit,
+        val onShare: (MediaSaver.Rec) -> Unit,
+        val onDelete: (MediaSaver.Rec) -> Unit
     ) : RecyclerView.Adapter<Adapter.VH>() {
 
         class VH(v: View) : RecyclerView.ViewHolder(v) {
@@ -98,14 +105,14 @@ class RecordingsActivity : AppCompatActivity() {
         override fun getItemCount() = data.size
 
         override fun onBindViewHolder(h: VH, position: Int) {
-            val f = data[position]
-            h.name.text = f.name
-            val size = Formatter.formatShortFileSize(h.itemView.context, f.length())
-            val date = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(f.lastModified()))
+            val rec = data[position]
+            h.name.text = rec.name
+            val size = Formatter.formatShortFileSize(h.itemView.context, rec.size)
+            val date = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(rec.date))
             h.detail.text = "$date · $size"
-            h.itemView.setOnClickListener { onOpen(f) }
-            h.share.setOnClickListener { onShare(f) }
-            h.del.setOnClickListener { onDelete(f) }
+            h.itemView.setOnClickListener { onOpen(rec) }
+            h.share.setOnClickListener { onShare(rec) }
+            h.del.setOnClickListener { onDelete(rec) }
         }
     }
 }

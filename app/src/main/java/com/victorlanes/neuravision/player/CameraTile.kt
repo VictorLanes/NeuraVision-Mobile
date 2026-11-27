@@ -120,7 +120,13 @@ class CameraTile @JvmOverloads constructor(
             try { mp.record(null) } catch (e: Throwable) { /* ignore */ }
             recording = false
             b.recDot.visibility = View.GONE
-            postDelayed({ onInfo?.invoke("Gravação salva em Minhas gravações") }, 300)
+            onInfo?.invoke("Salvando gravação…")
+            // o libVLC fecha o arquivo logo após parar; aí publicamos na galeria
+            postDelayed({
+                val name = MediaSaver.publishNewestRecording(context)
+                onInfo?.invoke(if (name != null) "Gravação salva na galeria (álbum NeuraVision)"
+                               else "Gravação salva (veja em Minhas gravações)")
+            }, 1500)
         }
     }
 

@@ -30,6 +30,7 @@
         <activity android:name=".ui.OnboardingActivity" android:exported="false" />
         <activity android:name=".ui.LockActivity" android:exported="false" />
         <activity android:name=".ui.SecurityActivity" android:exported="false" />
+        <activity android:name=".ui.ActivationActivity" android:exported="false" />
 
         <activity
             android:name=".ui.MainActivity"

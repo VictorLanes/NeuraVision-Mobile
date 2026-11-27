@@ -22,6 +22,7 @@ import com.victorlanes.neuravision.R
 import com.victorlanes.neuravision.data.BackupError
 import com.victorlanes.neuravision.data.BackupManager
 import com.victorlanes.neuravision.data.DeviceStore
+import com.victorlanes.neuravision.data.License
 import com.victorlanes.neuravision.data.Session
 import com.victorlanes.neuravision.databinding.ActivityMainBinding
 import com.victorlanes.neuravision.model.Device
@@ -57,12 +58,47 @@ class MainActivity : AppCompatActivity() {
             onDelete = { confirmDelete(it) })
         b.list.layoutManager = LinearLayoutManager(this)
         b.list.adapter = adapter
-        b.fab.setOnClickListener { edit(null) }
+        b.fab.setOnClickListener {
+            // Na versão gratuita permite apenas 1 equipamento.
+            if (store.all().isNotEmpty() && !License.isPro(this)) {
+                ProGate.allowed(this, "Cadastrar mais de um equipamento")
+            } else edit(null)
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        // Teste vencido / licença vencida: trava o app na tela de ativação.
+        if (License.isLocked(this)) {
+            startActivity(Intent(this, ActivationActivity::class.java).putExtra("blocking", true))
+            finish()
+            return
+        }
         reload()
+        updateBanner()
+    }
+
+    private fun updateBanner() {
+        val s = License.state(this)
+        when (s.status) {
+            License.Status.TRIAL -> {
+                b.banner.visibility = View.VISIBLE
+                b.banner.text = "Versão gratuita · ${s.daysLeft} dia(s) restantes — toque para ativar a versão completa."
+                b.banner.setOnClickListener {
+                    startActivity(Intent(this, ActivationActivity::class.java))
+                }
+            }
+            License.Status.LICENSED -> {
+                if (s.expiry != 0L && s.daysLeft in 0..7) {
+                    b.banner.visibility = View.VISIBLE
+                    b.banner.text = "Licença vence em ${s.daysLeft} dia(s) (${License.dateStr(s.expiry)}). Renove com o administrador."
+                    b.banner.setOnClickListener {
+                        startActivity(Intent(this, ActivationActivity::class.java))
+                    }
+                } else b.banner.visibility = View.GONE
+            }
+            else -> b.banner.visibility = View.GONE
+        }
     }
 
     // ---- re-bloqueio ao voltar de segundo plano ----
@@ -88,8 +124,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_backup -> startExport()
-            R.id.action_import -> importLauncher.launch(arrayOf("application/json", "application/octet-stream", "*/*"))
+            R.id.action_license -> startActivity(Intent(this, ActivationActivity::class.java))
+            R.id.action_backup -> if (ProGate.allowed(this, "Fazer backup")) startExport()
+            R.id.action_import -> if (ProGate.allowed(this, "Importar backup"))
+                importLauncher.launch(arrayOf("application/json", "application/octet-stream", "*/*"))
             R.id.action_security -> startActivity(Intent(this, SecurityActivity::class.java))
             R.id.action_lock -> { Session.lock(); startActivity(Intent(this, LockActivity::class.java)); finish() }
             else -> return super.onOptionsItemSelected(item)

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/accent"
+        android:theme="@style/ThemeOverlay.Material3.Dark"
+        app:title="NeuraVision Licenças"
+        app:titleTextColor="#FFFFFF" />
+
+    <ScrollView
+        android:id="@+id/form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3A2A00"
+                android:padding="10dp"
+                android:text="Uso exclusivo do administrador. Não compartilhe este aplicativo."
+                android:textColor="#FFD37A"
+                android:textSize="12sp" />
+
+            <TextView style="@style/LabLic" android:text="Nome do cliente" />
+            <EditText
+                android:id="@+id/client"
+                style="@style/FieldLic"
+                android:hint="Ex.: Mercado da Dona Ana"
+                android:inputType="textCapWords" />
+
+            <TextView style="@style/LabLic" android:text="ID do aparelho do cliente" />
+            <EditText
+                android:id="@+id/deviceId"
+                style="@style/FieldLic"
+                android:fontFamily="monospace"
+                android:hint="NV-XXXX-XXXX-XXXX"
+                android:inputType="textCapCharacters|textNoSuggestions" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="6dp"
+                android:text="Cole o ID que o cliente enviou. Deixe vazio para um código que funciona em qualquer aparelho."
+                android:textColor="@color/muted"
+                android:textSize="11sp" />
+
+            <TextView style="@style/LabLic" android:text="Validade da licença" />
+            <Spinner
+                android:id="@+id/validity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tile_border"
+                android:padding="12dp" />
+            <TextView
+                android:id="@+id/validityLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="6dp"
+                android:text=""
+                android:textColor="#9FD7F5"
+                android:textSize="12sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGenerate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:backgroundTint="@color/accent"
+                android:paddingVertical="12dp"
+                android:text="Gerar código"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <!-- Resultado -->
+            <LinearLayout
+                android:id="@+id/result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView style="@style/LabLic" android:text="Código de ativação" />
+                <TextView
+                    android:id="@+id/code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tile_border"
+                    android:fontFamily="monospace"
+                    android:padding="14dp"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textIsSelectable="true"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCopy"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:text="Copiar" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnShare"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#25D366"
+                        android:text="Enviar ao cliente"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHistory"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Ver licenças emitidas" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

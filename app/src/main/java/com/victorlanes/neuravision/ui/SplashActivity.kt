@@ -6,6 +6,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import com.victorlanes.neuravision.data.AuthStore
+import com.victorlanes.neuravision.data.License
 import com.victorlanes.neuravision.data.Session
 import com.victorlanes.neuravision.databinding.ActivitySplashBinding
 
@@ -18,6 +19,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(b.root)
+        License.ensureFirstLaunch(this)   // começa a contar o teste gratuito de 15 dias
         animate()
         b.root.postDelayed({ route() }, 1700)
     }

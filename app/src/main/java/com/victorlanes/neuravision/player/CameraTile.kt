@@ -36,6 +36,10 @@ class CameraTile @JvmOverloads constructor(
     var onMenu: (() -> Unit)? = null
     var onInfo: ((String) -> Unit)? = null
 
+    // controle de versão (gravar é recurso da versão completa)
+    var proEnabled: () -> Boolean = { true }
+    var onProRequired: ((String) -> Unit)? = null
+
     init {
         b.btnSnap.setOnClickListener { takeSnapshot() }
         b.btnRec.setOnClickListener { toggleRecord() }
@@ -106,6 +110,7 @@ class CameraTile @JvmOverloads constructor(
 
     fun toggleRecord() {
         val mp = player ?: return
+        if (!recording && !proEnabled()) { onProRequired?.invoke("Gravar a câmera"); return }
         if (!recording) {
             val dir = MediaSaver.recordingsDir(context)
             val ok = try { mp.record(dir.absolutePath) } catch (e: Throwable) { false }

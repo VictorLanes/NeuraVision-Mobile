@@ -8,6 +8,7 @@ import android.widget.GridLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.victorlanes.neuravision.data.DeviceStore
+import com.victorlanes.neuravision.data.License
 import com.victorlanes.neuravision.databinding.ActivityLiveBinding
 import com.victorlanes.neuravision.model.Device
 import com.victorlanes.neuravision.player.CameraTile
@@ -133,6 +134,8 @@ class LiveActivity : AppCompatActivity() {
         }
         tile.layoutParams = lp
         tile.onInfo = { msg -> Toast.makeText(this, msg, Toast.LENGTH_SHORT).show() }
+        tile.proEnabled = { License.isPro(this) }
+        tile.onProRequired = { feat -> ProGate.allowed(this, feat) }
         tile.onExpand = { toggleSingle(channel) }
         tile.onMenu = { showTileMenu(channel) }
         tile.setOnClickListener { tile.toggleControls() }
@@ -164,7 +167,7 @@ class LiveActivity : AppCompatActivity() {
             .setTitle("Câmera $channel")
             .setItems(opcoes) { _, i ->
                 when (i) {
-                    0 -> startActivity(
+                    0 -> if (ProGate.allowed(this, "Buscar e baixar gravação do DVR")) startActivity(
                         android.content.Intent(this, PlaybackActivity::class.java)
                             .putExtra("id", device.id).putExtra("channel", channel)
                     )

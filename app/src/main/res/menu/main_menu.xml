@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_license" android:title="Licença / Ativar" app:showAsAction="never" />
     <item android:id="@+id/action_backup" android:icon="@drawable/ic_backup" android:title="Fazer backup" app:showAsAction="never" />
     <item android:id="@+id/action_import" android:icon="@drawable/ic_import" android:title="Importar backup" app:showAsAction="never" />
     <item android:id="@+id/action_security" android:icon="@drawable/ic_shield" android:title="Segurança (PIN / biometria)" app:showAsAction="never" />
